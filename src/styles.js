@@ -15,25 +15,25 @@ module.exports = (function() {
       text {
         font-size: 10px;
         font-family: Sans-Serif;
-        /* in klay's coordinates "hanging" would be the correct value" */
+        /* in elk's coordinates "hanging" would be the correct value" */
         alignment-baseline: baseline;
-        text-anchor: start; 
+        text-anchor: start;
       }
       g.port > text {
-        font-size: 8px;  
+        font-size: 8px;
       }
       polyline {
         fill: none;
         stroke: black;
-        stroke-width: 1; 
+        stroke-width: 1;
       }
       path {
         fill: none;
-        stroke: black; 
-        stroke-width: 1; 
+        stroke: black;
+        stroke-width: 1;
       }
     `,
-    
+
     arrows: `
       polyline {
         marker-end: url(#arrow);
@@ -42,7 +42,7 @@ module.exports = (function() {
         marker-end: url(#arrow);
       }
     `,
-    
+
     centerLabels: `
       text.center {
         alignment-baseline: middle;

@@ -1,8 +1,8 @@
-klayjs-svg
+elkjs-svg
 === 
 
 A simple SVG generator for JSON graphs laid out 
-with [klayjs](https://github.com/OpenKieler/klayjs)
+with [elkjs](https://github.com/OpenKieler/elkjs)
 that requires no further dependencies.
 We mainly use it for debugging and rapid prototyping.
 
@@ -20,12 +20,12 @@ there's another module [klayjs-svg-cli](https://github.com/OpenKieler/klayjs-svg
 Apart from that do:
 
 ```
-npm install klayjs-svg
+npm install elkjs-svg
 ```
 ```
-var klaysvg = require('klayjs-svg');
+var elksvg = require('elkjs-svg');
 
-var renderer = new klaysvg.Renderer();
+var renderer = new elksvg.Renderer();
 var svg = renderer.toSvg(graph);
 console.log(svg);
 ```
@@ -52,7 +52,7 @@ note that you explicitly have to include the default style
 if you add further styles.
 ```
 var customstyles = ['...', '...'];
-renderer.styles([klaysvg.styles.simple].concat(customstyles));
+renderer.styles([elksvg.styles.simple].concat(customstyles));
 renderer.defs(...);
 ```
 

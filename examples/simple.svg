@@ -1,4 +1,4 @@
-<svg version="1.1" 
+<svg version="1.1"
   xmlns="http://www.w3.org/2000/svg" width="441.9999990463257" height="144.33333285649618" >
   <defs>
     <style type="text/css">
@@ -18,30 +18,30 @@
       text {
         font-size: 10px;
         font-family: Sans-Serif;
-        /* in klay's coordinates "hanging" would be the correct value" */
+        /* in elk's coordinates "hanging" would be the correct value" */
         alignment-baseline: baseline;
-        text-anchor: start; 
+        text-anchor: start;
       }
       g.port > text {
-        font-size: 8px;  
+        font-size: 8px;
       }
       polyline {
         fill: none;
         stroke: black;
-        stroke-width: 1; 
+        stroke-width: 1;
       }
       path {
         fill: none;
-        stroke: black; 
-        stroke-width: 1; 
+        stroke: black;
+        stroke-width: 1;
       }
-    
+
 
       text.center {
         alignment-baseline: middle;
         text-anchor: middle;
       }
-    
+
 
       polyline {
         marker-end: url(#arrow);
@@ -49,13 +49,13 @@
       path {
         marker-end: url(#arrow);
       }
-    
+
 ]]>
     </style>
     <marker id="arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
       <path d="M0,7 L10,4 L0,1 L0,7" style="fill: #000000;" />
-    </marker>"  
-    
+    </marker>"
+
   </defs>
   <g transform="translate(0,0)">
     <polyline points="329.9999990463257,65.6666661898295 315.99999928474426,65.6666661898295 315.99999928474426,19 12,19 12,49.99999976158142 47.99999952316284,49.99999976158142 " id="e1" class="edge" />

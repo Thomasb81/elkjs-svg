@@ -1,15 +1,15 @@
 {
-  "name": "klayjs-svg",
+  "name": "elkjs-svg",
   "version": "0.1.0",
   "author": {
     "name": "Ulf Rueegg",
     "email": "uru@informatik.uni-kiel.de"
   },
-  "description": "Simple SVG renderer for klayjs",
-  "main": "klayjs-svg.js",
+  "description": "Simple SVG renderer for elkjs",
+  "main": "elkjs-svg.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenKieler/klayjs-svg"
+    "url": "https://github.com/OpenKieler/elkjs-svg"
   },
   "dependencies": { },
   "devDependencies": { },
