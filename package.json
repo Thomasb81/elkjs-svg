@@ -1,18 +1,18 @@
 {
   "name": "elkjs-svg",
-  "version": "0.1.0",
+  "version": "0.1",
   "author": {
-    "name": "Ulf Rueegg",
-    "email": "uru@informatik.uni-kiel.de"
+    "name": "Emil Stenstrom",
+    "email": "emil@emilstenstrom.se"
   },
   "description": "Simple SVG renderer for elkjs",
   "main": "elkjs-svg.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenKieler/elkjs-svg"
+    "url": "https://github.com/EmilStenstrom/elkjs-svg"
   },
-  "dependencies": { },
-  "devDependencies": { },
+  "dependencies": {},
+  "devDependencies": {},
   "engines": { "node": ">=6.5.0" },
   "license": "MIT"
 }
