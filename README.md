@@ -2,7 +2,7 @@ elkjs-svg
 === 
 
 A simple SVG generator for JSON graphs laid out 
-with [elkjs](https://github.com/OpenKieler/elkjs)
+with [elkjs](https://github.com/kieler/elkjs)
 that requires no further dependencies.
 We mainly use it for debugging and rapid prototyping.
 
