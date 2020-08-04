@@ -11,7 +11,9 @@
     "type": "git",
     "url": "https://github.com/EmilStenstrom/elkjs-svg"
   },
-  "dependencies": {},
+  "dependencies": {
+    "elkjs": "^0.7.0"
+  },
   "devDependencies": {},
   "engines": { "node": ">=6.5.0" },
   "license": "MIT"
