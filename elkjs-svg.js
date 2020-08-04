@@ -77,11 +77,14 @@ Renderer.prototype = {
 
   registerEdges(p) {
     (p.edges || []).forEach((e) => {
-      var parent = e.source;
-      if (!this.isDescendant(e.source, e.target)) {
-          parent = this._parentIds[e.source];
-      }
-      this._edgeParents[parent].push(e);
+      e.sources.forEach(parent => {
+        e.targets.forEach(target => {
+          if (!this.isDescendant(parent, target)) {
+            parent = this._parentIds[parent];
+          }
+          this._edgeParents[parent].push(e);
+        });
+      });
     });
     (p.children || []).forEach(c => this.registerEdges(c));
   },
@@ -163,14 +166,18 @@ Renderer.prototype = {
 
   renderEdge(edge, node) {
     var allbends = [];
-    if (edge.sourcePoint) {
-      allbends.push(edge.sourcePoint);
-    }
-    if (edge.bendPoints) {
-      allbends = allbends.concat(edge.bendPoints);
-    } 
-    if (edge.targetPoint) {
-      allbends.push(edge.targetPoint);
+    if (edge.sections && edge.sections.length > 0) {
+      edge.sections.forEach(function(section){
+        if (section.startPoint) {
+          allbends.push(section.startPoint);
+        }
+        if (section.bendPoints) {
+          allbends = allbends.concat(section.bendPoints);
+        }
+        if (section.endPoint) {
+          allbends.push(section.endPoint);
+        }
+      });
     }
     var s = "";
     if (this._edgeRoutingStyle[node.id] == "SPLINES" || this._edgeRoutingStyle.__global == "SPLINES") {
