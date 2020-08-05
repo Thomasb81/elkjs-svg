@@ -14,7 +14,14 @@
   "dependencies": {
     "elkjs": "^0.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "xml2js": "*"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
   "engines": {
     "node": ">=14.0"
   },
