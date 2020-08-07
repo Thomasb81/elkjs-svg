@@ -4,36 +4,40 @@ const elksvg = require('../elkjs-svg');
 const fs = require('fs');
 const xml2js = require('xml2js');
 
-const testCase = require('mocha').it;
+const describe = require('mocha').describe;
+const it = require('mocha').it;
 const assert = require('chai').assert;
 
 const testcase_directory = "test/testcases"
 var files = fs.readdirSync(testcase_directory);
 files = files.filter(filename => filename.endsWith(".json"));
 
-files.forEach(json_filename => {
-    testCase("Checking " + json_filename, () => {
+const elk = new ELK()
+const renderer = new elksvg.Renderer();
 
-        fs.readFile(testcase_directory + "/" + json_filename, "utf-8", (err, data) => {
-            const elk = new ELK()
-            const graph = JSON.parse(data)
+files.forEach(json_filename => {
+    describe("Parsing files returns correct result", () => {
+
+        const data = fs.readFileSync(testcase_directory + "/" + json_filename, "utf-8");
+        const graph = JSON.parse(data)
+
+        it(`Parsing ${testcase_directory}/${json_filename} returns the correct result`, (done) => {
             elk.layout(graph)
                 .then(data => {
-                    const renderer = new elksvg.Renderer();
                     const result = renderer.toSvg(data);
-
                     const svg_filename = json_filename.replace(".json", ".svg");
                     fs.readFile(testcase_directory + "/" + svg_filename, "utf-8", (err, expected) => {
                         xml2js.parseString(result, {trim: true}, (err, parsed_result) => {
                             xml2js.parseString(expected, {trim: true}, (err, parsed_expected) => {
-                                testCase(json_filename, () => {
-                                    assert.deepEqual(parsed_result, parsed_expected)
-                                });
+                                assert.deepEqual(parsed_result, parsed_expected);
+                                done();
                             })
                         });
                     });
                 })
-                .catch(console.error);
+                .catch((err) => {
+                    done(err);
+                });
         });
     });
 });
