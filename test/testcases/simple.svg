@@ -38,8 +38,8 @@
 </style>
 </defs>
 <g transform="translate(0,0)">
-<polyline points="42,27 62,27 " id="e1" class="edge" />
-<polyline points="42,37 52,37 52,77 62,77 " id="e2" class="edge" />
+<polyline points="42,27 62,27" id="e1" class="edge" />
+<polyline points="42,37 52,37 52,77 62,77" id="e2" class="edge" />
 <rect id="n1" class="node" x="12" y="17" width="30" height="30" />
 <rect id="n2" class="node" x="62" y="12" width="30" height="30" />
 <rect id="n3" class="node" x="62" y="62" width="30" height="30" />

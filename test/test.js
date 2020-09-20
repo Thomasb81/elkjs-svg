@@ -2,6 +2,7 @@ const ELK = require('elkjs')
 const elksvg = require('../elkjs-svg');
 
 const fs = require('fs');
+const util = require('util');
 const xml2js = require('xml2js');
 
 const describe = require('mocha').describe;

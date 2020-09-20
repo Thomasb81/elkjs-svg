@@ -3,6 +3,7 @@
 const layoutOptions = require("./src/opts.js");
 const styles = require("./src/styles.js");
 const defs = require("./src/defs.js");
+const beautifer = require("./src/beautifier.js");
 
 function Renderer() {
   // configuration
@@ -94,214 +95,168 @@ Renderer.prototype = {
    */
 
   renderRoot(root) {
-    var s = this.svgHead(root);
-    s += "<defs>\n";
-    s += this.svgCss(root.css || this._style);
-    s += root.defs ||this._defs;
-    s += "</defs>";
-    s += "\n";
-    s += this.renderGraph(root);
-    s += "\n";
-    s += this.svgTail();
-    return s;
+    return `
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+        width="${root.width || 100}" height="${root.height || 100}">
+        <defs>
+          ${this.svgCss(root.css || this._style)}
+          ${root.defs || this._defs}
+        </defs>
+        ${this.renderGraph(root)}
+      </svg>
+    `
   },
 
   renderGraph(graph) {
-    var s = "";
-    s += "<g transform=\"translate(" + (graph.x || 0) + "," + (graph.y || 0) +")\">";
-    s += "\n";
     // paint edges first such that ports are drawn on top of them
-    s += (this._edgeParents[graph.id] || []).map((e) => { return this.renderEdge(e, graph); }).join("\n");
-    s += "\n";
-    s += (graph.children || []).map(c => this.renderNode(c)).join("\n");
-    s += "\n";
-    s += (graph.children || []).filter((c) => { return c.children != null && c.children.length > 0; })
-                               .map(c => this.renderGraph(c))
-                               .join("\n");
-    s += "\n";
-    s += "</g>";
-    return s;
+    return `
+      <g transform="translate(${(graph.x || 0) + "," + (graph.y || 0)})">
+        ${(this._edgeParents[graph.id] || []).map((e) => { return this.renderEdge(e, graph); }).join("\n")}
+        ${(graph.children || []).map(c => this.renderNode(c)).join("\n")}
+        ${(graph.children || []).filter((c) => { return c.children != null && c.children.length > 0; })
+                                .map(c => this.renderGraph(c))
+                                .join("\n")}
+      </g>
+    `
   },
 
   renderNode(node) {
-    var s = "<rect ";
-    s += this.idClass(node, "node");
-    s += this.posSize(node);
-    s += this.style(node);
-    s += this.attributes(node);
-    s += "/>";
     if (node.ports || node.labels) {
-      s += "<g transform=\"translate(" + (node.x || 0) + "," + (node.y || 0) +")\" >";
-      s += "\n";
+      return `
+        ${this.renderRect(node)}
+        <g transform="translate(${(node.x || 0) + "," + (node.y || 0)})">
+          ${node.ports? (node.ports || []).map(p => this.renderPort(p)).join("\n"): ""}
+          ${node.labels? (node.labels || []).map(l => this.renderLabel(l)).join("\n"): ""}
+        </g>
+      `
     }
-    // ports
-    if (node.ports) {
-      s += (node.ports || []).map(p => this.renderPort(p)).join("\n");
-      s += "\n";
-    }
-    if (node.labels) {
-      s += (node.labels || []).map(l => this.renderLabel(l)).join("\n");
-      s += "\n";
-    }
-    if (node.ports || node.labels) {
-      s += "</g>";
-    }
-    return s;
+    return this.renderRect(node)
+  },
+
+  renderRect(node) {
+    return `
+      <rect ${this.idClass(node, "node")} ${this.posSize(node)} ${this.style(node)} ${this.attributes(node)} />
+    `
   },
 
   renderPort(port) {
-    var s = "<rect ";
-    s += this.idClass(port, "port");
-    s += this.posSize(port);
-    s += this.style(port);
-    s += this.attributes(port);
-    s += "/>";
     if (port.labels) {
-      s += "<g class=\"port\" transform=\"translate(" + (port.x || 0) + "," + (port.y || 0) +")\" >";
-      s += (port.labels || []).map(l => this.renderLabel(l)).join("\n");
-      s += "</g>";
+      return `
+        ${this.renderRect(port)}
+        <g class="port" transform="translate(${(port.x || 0) + "," + (port.y || 0)})>
+          ${this.renderLabels(port.labels)}
+        </g>
+      `
     }
-    return s;
+    return this.renderRect(port);
   },
 
   renderEdge(edge, node) {
-    var allbends = [];
-    if (edge.sections && edge.sections.length > 0) {
-      edge.sections.forEach(function(section){
+    var bends = this.getBends(edge.sections);
+
+    if (this._edgeRoutingStyle[node.id] == "SPLINES" || this._edgeRoutingStyle.__global == "SPLINES") {
+      return `
+        ${this.renderPath(edge, bends)}
+        ${this.renderLabels(edge.labels)}
+      `
+    }
+    return `
+      ${this.renderPolyline(edge, bends)}
+      ${this.renderLabels(edge.labels)}
+    `
+  },
+
+  renderPath(edge, bends) {
+    return `
+      <path d="${this.bendsToSpline(bends)}" ${this.idClass(edge, "edge")} ${this.style(edge)} ${this.attributes(edge)} />
+    `
+  },
+
+  renderPolyline(edge, bends) {
+    return `
+      <polyline points="${this.bendsToPolyline(bends)}" ${this.idClass(edge, "edge")} ${this.style(edge)} ${this.attributes(edge)} />
+    `
+  },
+
+  getBends(sections) {
+    var bends = [];
+    if (sections && sections.length > 0) {
+      sections.forEach(section => {
         if (section.startPoint) {
-          allbends.push(section.startPoint);
+          bends.push(section.startPoint);
         }
         if (section.bendPoints) {
-          allbends = allbends.concat(section.bendPoints);
+          bends = bends.concat(section.bendPoints);
         }
         if (section.endPoint) {
-          allbends.push(section.endPoint);
+          bends.push(section.endPoint);
         }
       });
     }
-    var s = "";
-    if (this._edgeRoutingStyle[node.id] == "SPLINES" || this._edgeRoutingStyle.__global == "SPLINES") {
-      s += "<path ";
-      s += "d=\"" + this.bendsToSpline(allbends) + "\" ";
-    } else {
-      s += "<polyline ";
-      s += "points=\"" + this.bendsToPolyline(allbends) + "\" ";
-    }
-    s += this.idClass(edge, "edge");
-    s += this.style(edge);
-    s += this.attributes(edge);
-    s += "/>";
-    if (edge.labels) {
-      s += (edge.labels || []).map(l => this.renderLabel(l)).join("\n");
-    }
-    return s;
+    return bends;
+  },
+
+  renderLabels(labels) {
+    return (labels || []).map(l => this.renderLabel(l)).join("\n")
   },
 
   renderLabel(label) {
-    var s = "<text ";
-    s += this.idClass(label);
-    s += this.posSize(label);
-    s += this.style(label);
-    s += this.attributes(label);
-    s += ">";
-    s += label.text;
-    s += "</text>";
-    return s;
+    return `
+      <text ${this.idClass(label)} ${this.posSize(label)} ${this.style(label)} ${this.attributes(label)}>
+        ${label.text}
+      </text>
+    `
   },
 
   bendsToPolyline(bends) {
-    var s = "";
-    for (var i = 0; i < bends.length; i++) {
-        s += "" + bends[i].x + "," + bends[i].y + " ";
-    }
-    s += "";
-    return s;
+    return bends.map(bend => `${bend.x},${bend.y}`).join(" ")
   },
 
-  bendsToSpline(cps) {
-
-    let s = '';
-    if (cps.length) {
-      let {x, y} = cps[0];
-      s += `M${x} ${y} `;
+  bendsToSpline(bends) {
+    if (!bends.length) {
+      return ""
     }
 
-    var i = 1;
-    while (i < cps.length) {
-      var left = cps.length - i;
+    let {x, y} = bends[0];
+    points = [`M${x} ${y}`]
+
+    for (let i = 1; i < bends.length; i = i+3) {
+      var left = bends.length - i;
       if (left == 1) {
-        s += "L" + cps[i].x + " " + cps[i].y + " ";
+        points.push(`L${bends[i].x + " " + bends[i].y}`);
       } else if (left == 2) {
-        s += "Q" + cps[i].x + " " + cps[i].y + " ";
-        s += "" + cps[i+1].x + " " + cps[i+1].y + " ";
+        points.push(`Q${bends[i].x + " " + bends[i].y}`);
+        points.push(bends[i+1].x + " " + bends[i+1].y);
       } else {
-        s += "C" + cps[i].x + " " + cps[i].y + " ";
-        s += "" + cps[i+1].x + " " + cps[i+1].y + " ";
-        s += "" + cps[i+2].x + " " + cps[i+2].y + " ";
+        points.push(`C${bends[i].x + " " + bends[i].y}`);
+        points.push(bends[i+1].x + " " + bends[i+1].y);
+        points.push(bends[i+2].x + " " + bends[i+2].y);
       }
-      i += 3;
     }
-    return s;
-  },
-
-  svgHead(graph) {
-    var s ="<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" ";
-    s += "width=\"" + (graph.width || 100) + "\" ";
-    s += "height=\"" + (graph.height || 100) + "\" ";
-    s += ">";
-    return s;
-  },
-
-  svgTail() {
-    return "</svg>\n";
+    return points.join(" ");
   },
 
   svgCss(css) {
-    var s = "<style type=\"text/css\">\n";
-    s += "<![CDATA[\n";
-    s += css;
-    s += "\n]]>\n";
-    s += "</style>\n";
-    return s;
+    return `
+      <style type="text/css">
+      <![CDATA[
+        ${css}
+      ]]>
+      </style>
+    `
   },
 
   posSize(e) {
-    var s = "";
-    s += "x=\"" + (e.x || 0) + "\" ";
-    s += "y=\"" + (e.y || 0) + "\" ";
-    s += "width=\"" + (e.width || 0) + "\" ";
-    s += "height=\"" + (e.height || 0) + "\" ";
-    return s;
+    return `x="${e.x | 0}" y="${e.y | 0}" width="${e.width | 0}" height="${e.height | 0}" `
   },
 
-  idClass(e, additionalClasses) {
-    var s = "";
-    if (e.id) {
-      s += "id=\"" + e.id + "\" ";
-    }
-    var classes = [e.class, additionalClasses].reduce((acc, e) => {
-     if (e == undefined) {
-       return acc;
-     } else if (typeof e === "string") {
-       return acc.concat(e);
-     } else if (e instanceof Array) {
-       return acc.concat(e);
-     } else {
-       return acc;
-     }
-    }, []);
-    if (classes.length > 0) {
-      s += "class=\"" + classes.join(" ") + "\" ";
-    }
-    return s;
+  idClass(e, className) {
+    var classes = [e.class, className].filter(c => c).join(" ")
+    return `${e.id? `id="${e.id}"`: ""} ${classes? `class="${classes}"`: ""}`
   },
 
   style(e) {
-    var s = "";
-    if (e.style) {
-      s += "style=\"" + e.style + "\" ";
-    }
-    return s;
+    return `${e.style? `style="${e.style}"`: ""}`
   },
 
   attributes(e) {
@@ -309,7 +264,7 @@ Renderer.prototype = {
     if (e.attributes) {
       var attrs = e.attributes;
       for (var key in attrs) {
-        s += key + "=\"" + attrs[key] + "\" ";
+        s += `${key}="${attrs[key]}" `;
       }
     }
     return s;
@@ -348,7 +303,7 @@ Renderer.prototype = {
 
   toSvg(json) {
    this.init(json);
-   return this.renderRoot(json);
+   return beautifer(this.renderRoot(json));
   }
 };
 
