@@ -57,6 +57,10 @@ module.exports = (xml, indent) => {
 
     // removes any pre-existing whitespace chars at the end or beginning of the item
     item = item.replace(/^\s+|\s+$/g, '');
+
+    // removes any repeated whitespace
+    item = item.replace(/  +/, ' ');
+
     if (isClosingTag(item)) {
       depth--;
     }
