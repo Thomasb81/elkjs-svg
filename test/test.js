@@ -13,6 +13,10 @@ const testcase_directory = "test/testcases"
 var files = fs.readdirSync(testcase_directory);
 files = files.filter(filename => filename.endsWith(".json"));
 
+if (process.env.ONLY_TEST) {
+    files = files.filter(filename => filename.includes(process.env.ONLY_TEST));
+}
+
 const elk = new ELK()
 const renderer = new elksvg.Renderer();
 
