@@ -23,4 +23,7 @@ files.forEach(json_filename => {
             const result = renderer.toSvg(data);
             console.log(result);
         })
+        .catch((err) => {
+            console.error(err);
+        });
 });
