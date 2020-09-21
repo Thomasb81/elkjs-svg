@@ -72,3 +72,18 @@ results in a corresponding svg element
 ```
 <rect id="node1" class="myClass otherClass node" x="0" y="0" width="0" height="0" style="fill: #ddd;" data-foo="bar" rx="5" />
 ```
+
+Running tests
+===
+
+The test runner goes through all files in `test/testcases/*.json`, renders them with ELK, and compares the result with the SVG with the same name.
+
+Run all the tests by typing `npm test` in the project root. 
+
+To run just one test use `ONLY_TEST="simple" npm test`, where "simple" is the name of the json files you want to render.
+
+To add a new testcase, put a new json files into test/testcases, and use the test-render script to generate a new SVG:
+
+```
+env ONLY_RENDER="your-testcase" npm run test-render | awk "NR>4" > test/testcases/your-testcase.svg
+```
