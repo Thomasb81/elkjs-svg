@@ -78,12 +78,15 @@ Renderer.prototype = {
 
   registerEdges(p) {
     (p.edges || []).forEach((e) => {
-      e.sources.forEach(parent => {
-        e.targets.forEach(target => {
-          if (!this.isDescendant(parent, target)) {
-            parent = this._parentIds[parent];
+      e.sources.forEach(source_id => {
+        e.targets.forEach(target_id => {
+          if (source_id.includes(":")) {
+            source_id = source_id.slice(0, source_id.indexOf(":"));
           }
-          this._edgeParents[parent].push(e);
+          if (!this.isDescendant(source_id, target_id)) {
+            source_id = this._parentIds[source_id];
+          }
+          this._edgeParents[source_id].push(e);
         });
       });
     });
