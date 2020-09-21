@@ -14,10 +14,10 @@ module.exports = (function() {
 
       text {
         font-size: 10px;
-        font-family: Sans-Serif;
+        font-family: sans-serif;
         /* in elk's coordinates "hanging" would be the correct value" */
-        alignment-baseline: baseline;
-        text-anchor: start;
+        dominant-baseline: hanging;
+        text-align: left;
       }
       g.port > text {
         font-size: 8px;
