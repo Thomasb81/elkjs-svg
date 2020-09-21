@@ -143,7 +143,7 @@ Renderer.prototype = {
     if (port.labels) {
       return `
         ${this.renderRect(port)}
-        <g class="port" transform="translate(${(port.x || 0) + "," + (port.y || 0)})>
+        <g class="port" transform="translate(${(port.x || 0) + "," + (port.y || 0)})">
           ${this.renderLabels(port.labels)}
         </g>
       `
