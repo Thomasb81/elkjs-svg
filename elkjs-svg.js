@@ -293,18 +293,6 @@ Renderer.prototype = {
     return this;
   },
 
-  /**
-   * the options that have been used during layout.
-   * They are used here to derive edge routing.
-   */
-  usedLayoutOptions(opts) {
-    var edgeRouting = this.getOption(opts, layoutOptions.edgeRouting);
-    if (edgeRouting) {
-      this._edgeRoutingStyle.__global = edgeRouting;
-    }
-    return this;
-  },
-
   toSvg(json) {
    this.init(json);
    return beautifer(this.renderRoot(json));

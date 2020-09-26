@@ -28,16 +28,6 @@ var svg = renderer.toSvg(graph);
 console.log(svg);
 ```
 
-It helps the renderer to know which 
-layout options have been used, e.g. 
-to properly render edges either 
-with polylines or paths (splines).
-
-```
-var opts = { edgeRouting: "SPLINES" };
-renderer.usedLayoutOptions(opts)
-```
-
 The generated SVG elements can be styled using css. 
 A simple style definition is already included and used as 
 default. 
