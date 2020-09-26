@@ -29,7 +29,7 @@ files.forEach(json_filename => {
         it(`Parsing ${testcase_directory}/${json_filename} returns the correct result`, (done) => {
             elk.layout(graph)
                 .then(data => {
-                    const result = renderer.toSvg(data);
+                    const result = renderer.toSvg(data, styles="", defs="");
                     const svg_filename = json_filename.replace(".json", ".svg");
                     fs.readFile(testcase_directory + "/" + svg_filename, "utf-8", (err, expected) => {
                         xml2js.parseString(result, {trim: true}, (err, parsed_result) => {

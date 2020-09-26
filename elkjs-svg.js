@@ -273,6 +273,9 @@ Renderer.prototype = {
   },
 
   svgCss(css) {
+    if (css == "") {
+      return "";
+    }
     return `
       <style type="text/css">
       <![CDATA[
