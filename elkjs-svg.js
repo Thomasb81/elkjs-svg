@@ -254,7 +254,8 @@ Renderer.prototype = {
   },
 
   idClass(e, className) {
-    var classes = [e.class, className].filter(c => c).join(" ")
+    var elemClasses = Array.isArray(e.class)? e.class.join(" "): e.class;
+    var classes = [elemClasses, className].filter(c => c).join(" ")
     return `${e.id? `id="${e.id}"`: ""} ${classes? `class="${classes}"`: ""}`
   },
 
