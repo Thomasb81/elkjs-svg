@@ -130,13 +130,13 @@ Renderer.prototype = {
    * Rendering methods.
    */
 
-  renderRoot(root) {
+  renderRoot(root, styles, defs) {
     return `
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
         width="${root.width || 100}" height="${root.height || 100}">
         <defs>
-          ${this.svgCss(root.css || this._style)}
-          ${root.defs || this._defs}
+          ${this.svgCss(root.css || (styles == "DEFAULT"? this._style: ""))}
+          ${root.defs || (defs == "DEFAULT"? this._defs: "")}
         </defs>
         ${this.renderGraph(root)}
       </svg>
@@ -314,7 +314,7 @@ Renderer.prototype = {
 
   toSvg(json, styles="DEFAULT", defs="DEFAULT") {
    this.init(json);
-   var svg = this.renderRoot(json);
+   var svg = this.renderRoot(json, styles, defs);
    return beautifer(svg);
   }
 };
