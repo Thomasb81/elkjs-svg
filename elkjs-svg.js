@@ -1,6 +1,5 @@
 "use strict";
 
-const layoutOptions = require("./src/opts.js");
 const beautifer = require("./src/beautifier.js");
 
 function Renderer() {
@@ -98,7 +97,7 @@ Renderer.prototype = {
   registerParentIds(p) {
     this._edgeParents[p.id] = [];
     if (p.properties) {
-      var er = this.getOption(p.properties, layoutOptions.edgeRouting);
+      var er = this.getOption(p.properties);
       if (er) {
         this._edgeRoutingStyle[p.id] = er;
       }
@@ -325,5 +324,4 @@ Renderer.prototype = {
 
 exports = module.exports = {
   Renderer,
-  opts: layoutOptions,
 };
