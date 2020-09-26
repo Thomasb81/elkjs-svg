@@ -87,3 +87,5 @@ To add a new testcase, put a new json files into test/testcases, and use the tes
 ```
 env ONLY_RENDER="your-testcase" npm run test-render | awk "NR>4" > test/testcases/your-testcase.svg
 ```
+
+This tells the test-render script to only render your-testcase, removes the first four lines (which are output from npm), and writes the resulting SVG to the path you specify.
