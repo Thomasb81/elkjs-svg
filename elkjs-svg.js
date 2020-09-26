@@ -1,14 +1,47 @@
 "use strict";
 
 const layoutOptions = require("./src/opts.js");
-const styles = require("./src/styles.js");
-const defs = require("./src/defs.js");
 const beautifer = require("./src/beautifier.js");
 
 function Renderer() {
   // configuration
-  this._style = styles.__defaults.map(s => styles[s]).join("\n");
-  this._defs = defs.__defaults.map(d => defs[d]).join("\n");
+  this._style = `
+      rect {
+        opacity: 0.8;
+        fill: #6094CC;
+        stroke-width: 1;
+        stroke: #222222;
+      }
+      rect.port {
+        opacity: 1;
+        fill: #326CB2;
+      }
+      text {
+        font-size: 10px;
+        font-family: sans-serif;
+        /* in elk's coordinates "hanging" would be the correct value" */
+        dominant-baseline: hanging;
+        text-align: left;
+      }
+      g.port > text {
+        font-size: 8px;
+      }
+      polyline {
+        fill: none;
+        stroke: black;
+        stroke-width: 1;
+      }
+      path {
+        fill: none;
+        stroke: black;
+        stroke-width: 1;
+      }
+  `;
+  this._defs = `
+      <marker id="arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
+        <path d="M0,7 L10,4 L0,1 L0,7" style="fill: #000000;" />
+      </marker>"
+  `;
 
   this.reset();
 }
@@ -279,23 +312,10 @@ Renderer.prototype = {
    * Public API
    */
 
-  styles(...styles) {
-    if (styles.length == 0)
-      return this._style;
-    this._style = styles.join(" ");
-    return this;
-  },
-
-  defs(...defs) {
-    if (defs.length == 0)
-      return this._defs;
-    this._defs = defs.join(" ");
-    return this;
-  },
-
-  toSvg(json) {
+  toSvg(json, styles="DEFAULT", defs="DEFAULT") {
    this.init(json);
-   return beautifer(this.renderRoot(json));
+   var svg = this.renderRoot(json);
+   return beautifer(svg);
   }
 };
 
@@ -303,6 +323,4 @@ Renderer.prototype = {
 exports = module.exports = {
   Renderer,
   opts: layoutOptions,
-  defs,
-  styles
 };
