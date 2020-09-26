@@ -60,7 +60,7 @@ as part of the json graph. A node definition like this
 ```
 results in a corresponding svg element 
 ```
-<rect id="node1" class="myClass otherClass node" x="0" y="0" width="0" height="0" style="fill: #ddd;" data-foo="bar" rx="5" />
+<rect id="node1" class="myClass otherClass node" x="12" y="12" width="0" height="0" style="fill: #ddd;" data-foo="bar" rx="5" />
 ```
 
 Running tests
