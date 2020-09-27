@@ -38,24 +38,24 @@ receive a class attribute equal to their type (e.g. `.node`).
 Custom styles and svg definitions can be specified as follows, 
 note that you explicitly have to include the default style 
 if you add further styles.
+
 ```
 var elksvg = require('elkjs-svg');
 
 var renderer = new elksvg.Renderer();
 var svg = renderer.toSvg(
-    graph, 
-    styles=`
+    graph,
+    styles=new elksvg.Text(`
       rect {
         opacity: 0.8;
         fill: #6094CC;
         stroke-width: 1;
         stroke: #222222;
-      }`, 
-    defs=`
-      <marker id="arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
-        <path d="M0,7 L10,4 L0,1 L0,7" style="fill: #000000;" />
-      </marker>"
-  `
+      }`
+    ), 
+    defs=new elksvg.Xml("marker", {"id": "arrow"}, [
+        elksvg.helpers.xml.Xml("path", {"d": "M0,7 L10,4 L0,1 L0,7", "style": "fill: #000000;"})
+    ])
 );
 console.log(svg);
 ```
