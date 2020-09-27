@@ -45,15 +45,20 @@ class Xml extends Node {
     var numChildren = this.children.length;
     var out = [];
 
-    out.push(`${this.indent(indent)}<${this.tagName}${attributesString? " " + attributesString: ""}>`);
+    out.push(`${this.indent(indent)}<${this.tagName}${attributesString? " " + attributesString: ""}`);
     if (this.children.length != 0) {
+        out.push(">");
         out.push("\n");
         for (const child of this.children) {
             out.push(`${child.render(indent + 1)}\n`);
         }
         out.push(this.indent(indent));
+        out.push(`</${this.tagName}>`);
     }
-    out.push(`</${this.tagName}>`);
+    else {
+        out.push(` />`);
+    }
+
     return out.join("");
   }
 }
