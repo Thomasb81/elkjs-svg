@@ -1,6 +1,6 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
  width="363.99999999999994" height="164">
-    <g transform="translate(0,0)">
+    <g>
         <polyline points="118.64851612999999,62 118.64851612999999,72 182,72 182,82" id="E1" class="edge" />
         <polyline points="238.64851613000002,62 238.64851613000002,72 182,72 182,82" id="E2" class="edge" />
         <polyline points="182,82 182,102" id="E3" class="edge" />

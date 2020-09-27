@@ -189,8 +189,11 @@ Renderer.prototype = {
         children.push(this.renderGraph(child));
       }
     }
-
-    return new Xml("g", {"transform": `translate(${graph.x || 0},${graph.y || 0})`}, children);
+    var properties = {};
+    if (graph.x || graph.y) {
+      properties["transform"] = `translate(${graph.x || 0},${graph.y || 0})`;
+    }
+    return new Xml("g", properties, children);
   },
 
   renderPortsAndLabels(node) {
