@@ -1,6 +1,6 @@
 "use strict";
 
-const {Xml, Text} = require("./src/xml.js");
+const {Xml, Text} = require("./helpers/xml.js");
 
 function Renderer() {
   // configuration
@@ -386,4 +386,6 @@ Renderer.prototype = {
 
 exports = module.exports = {
   Renderer,
+  Xml,
+  Text
 };

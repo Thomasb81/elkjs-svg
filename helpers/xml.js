@@ -78,6 +78,11 @@ if (require.main === module) {
                             stroke-width: 1;
                             stroke: #222222;
                           }
+
+                          rect.port {
+                            opacity: 1;
+                            fill: #326CB2;
+                          }
                         ]]>
                     `)
                 ])
