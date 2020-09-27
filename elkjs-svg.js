@@ -1,10 +1,10 @@
 "use strict";
 
-const beautifer = require("./src/beautifier.js");
+const {Xml, Text} = require("./src/xml.js");
 
 function Renderer() {
   // configuration
-  this._style = `
+  this._style = new Text(`
       rect {
         opacity: 0.8;
         fill: #6094CC;
@@ -35,12 +35,21 @@ function Renderer() {
         stroke: black;
         stroke-width: 1;
       }
-  `;
-  this._defs = `
-      <marker id="arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
-        <path d="M0,7 L10,4 L0,1 L0,7" style="fill: #000000;" />
-      </marker>"
-  `;
+  `);
+  this._defs = new Xml(
+    "marker",
+    {
+      "id": "arrow",
+      "markerWidth": "10",
+      "markerHeight": "8",
+      "refX": "10",
+      "refY": "4",
+      "orient": "auto"
+     },
+     [
+       new Xml("path", {"d": "M0,7 L10,4 L0,1 L0,7", "style": "fill: #000000;"})
+     ]
+  );
 
   this.reset();
 }
@@ -130,87 +139,120 @@ Renderer.prototype = {
    */
 
   renderRoot(root, styles, defs) {
-    return `
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-        width="${root.width || 100}" height="${root.height || 100}">
-        <defs>
-          ${this.svgCss(root.css || (styles == "DEFAULT"? this._style: ""))}
-          ${root.defs || (defs == "DEFAULT"? this._defs: "")}
-        </defs>
-        ${this.renderGraph(root)}
-      </svg>
-    `
+    var defsChildren = [];
+    var css = this.svgCss(root.css || (styles == "DEFAULT"? this._style: ""));
+    var defs = (root.defs || (defs == "DEFAULT"? this._defs: ""));
+    if (css || defs) {
+      if (css) {
+        defsChildren.push(css)
+      }
+      if (defs) {
+        defsChildren.push(defs)
+      }
+    }
+
+    return new Xml(
+      "svg",
+      {
+          "version": "1.1",
+          "xmlns": "http://www.w3.org/2000/svg",
+          "width": root.width || 100,
+          "height": root.height || 100
+      },
+      [
+          new Xml("defs", {}, defsChildren),
+          this.renderGraph(root),
+      ]);
   },
 
   renderGraph(graph) {
-    // paint edges first such that ports are drawn on top of them
-    return `
-      <g transform="translate(${(graph.x || 0) + "," + (graph.y || 0)})">
-        ${(this._edgeParents[graph.id] || []).map((e) => { return this.renderEdge(e, graph); }).join("\n")}
-        ${(graph.children || []).map(c => this.renderNode(c)).join("\n")}
-        ${(graph.children || []).filter((c) => { return c.children != null && c.children.length > 0; })
-                                .map(c => this.renderGraph(c))
-                                .join("\n")}
-      </g>
-    `
+    var children = [];
+
+    // paint edges first so that ports are drawn on top of them
+    for (const edge of this._edgeParents[graph.id]) {
+      children.push(this.renderEdge(edge, graph));
+      if (edge.labels) {
+        children.push(this.renderLabels(edge.labels));
+      }
+    }
+    for (const child of graph.children) {
+      children.push(this.renderRect(child));
+
+      if (child.ports || child.labels) {
+        children.push(this.renderPortsAndLabels(child))
+      }
+
+      if (child.children != null && child.children.length > 0) {
+        children.push(this.renderGraph(child));
+      }
+    }
+
+    return new Xml("g", {"transform": `translate(${graph.x || 0},${graph.y || 0})`}, children);
   },
 
-  renderNode(node) {
-    if (node.ports || node.labels) {
-      return `
-        ${this.renderRect(node)}
-        <g transform="translate(${(node.x || 0) + "," + (node.y || 0)})">
-          ${node.ports? (node.ports || []).map(p => this.renderPort(p)).join("\n"): ""}
-          ${node.labels? (node.labels || []).map(l => this.renderLabel(l)).join("\n"): ""}
-        </g>
-      `
+  renderPortsAndLabels(node) {
+    var children = [];
+
+    for (const p of node.ports) {
+      children.push(this.renderRect(p));
+      if (p.labels) {
+        children.push(this.renderPort(p));
+      }
     }
-    return this.renderRect(node)
+    if (node.labels) {
+      for (const l of node.labels) {
+        children.push(this.renderLabel(l));
+      }
+    }
+
+    return new Xml("g", {"transform": `translate(${node.x || 0},${node.y || 0})`}, children);
   },
 
   renderRect(node) {
-    return `
-      <rect ${this.idClass(node, "node")} ${this.posSize(node)} ${this.style(node)} ${this.attributes(node)} />
-    `
+    return new Xml("rect", {
+      ...this.idClass(node, "node"),
+      ...this.posSize(node),
+      ...this.style(node),
+      ...this.attributes(node)
+    })
   },
 
   renderPort(port) {
-    if (port.labels) {
-      return `
-        ${this.renderRect(port)}
-        <g class="port" transform="translate(${(port.x || 0) + "," + (port.y || 0)})">
-          ${this.renderLabels(port.labels)}
-        </g>
-      `
-    }
-    return this.renderRect(port);
+    return new Xml(
+      "g",
+      {
+          ...this.idClass(port, "port"),
+          "transform": `translate(${port.x || 0},${port.y || 0})`
+      },
+      this.renderLabels(port.labels)
+    )
   },
 
   renderEdge(edge, node) {
     var bends = this.getBends(edge.sections);
 
     if (this._edgeRoutingStyle[node.id] == "SPLINES" || this._edgeRoutingStyle.__global == "SPLINES") {
-      return `
-        ${this.renderPath(edge, bends)}
-        ${this.renderLabels(edge.labels)}
-      `
+      return this.renderPath(edge, bends);
     }
-    return `
-      ${this.renderPolyline(edge, bends)}
-      ${this.renderLabels(edge.labels)}
-    `
+    return this.renderPolyline(edge, bends);
   },
 
   renderPath(edge, bends) {
-    return `
-      <path d="${this.bendsToSpline(bends)}" ${this.idClass(edge, "edge")} ${this.style(edge)} ${this.attributes(edge)} />
-    `
+    return new Xml("path", {
+      "d": this.bendsToSpline(bends),
+      ...this.idClass(edge, "edge"),
+      ...this.style(edge),
+      ...this.attributes(edge),
+    });
   },
 
   renderPolyline(edge, bends) {
-    return `
-      <polyline points="${this.bendsToPolyline(bends)}" ${this.idClass(edge, "edge")} ${this.style(edge)} ${this.attributes(edge)} />
-    `
+    return new Xml("polyline", {
+      "points": this.bendsToPolyline(bends),
+      ...this.idClass(edge, "edge"),
+      ...this.style(edge),
+      ...this.attributes(edge),
+    });
   },
 
   getBends(sections) {
@@ -232,15 +274,18 @@ Renderer.prototype = {
   },
 
   renderLabels(labels) {
-    return (labels || []).map(l => this.renderLabel(l)).join("\n")
+    return (labels || []).map(l => this.renderLabel(l))
   },
 
   renderLabel(label) {
-    return `
-      <text ${this.idClass(label)} ${this.posSize(label)} ${this.style(label)} ${this.attributes(label)}>
-        ${label.text}
-      </text>
-    `
+    return new Xml("text", {
+      ...this.idClass(label, "label"),
+      ...this.posSize(label),
+      ...this.style(label),
+      ...this.attributes(label),
+    }, [
+      new Text(label.text)
+    ]);
   },
 
   bendsToPolyline(bends) {
@@ -275,38 +320,49 @@ Renderer.prototype = {
     if (css == "") {
       return "";
     }
-    return `
-      <style type="text/css">
-      <![CDATA[
-        ${css}
-      ]]>
-      </style>
-    `
+    return new Xml("style", {"type": "text/css"}, [
+      new Text(`
+        <![CDATA[
+          ${root.css || (styles == "DEFAULT"? this._style: "")}
+        ]]>
+      `
+    )]);
   },
 
   posSize(e) {
-    return `x="${e.x | 0}" y="${e.y | 0}" width="${e.width | 0}" height="${e.height | 0}" `
+    return {
+      "x": e.x || 0,
+      "y": e.y || 0,
+      "width": e.width || 0,
+      "height": e.height || 0,
+    };
   },
 
   idClass(e, className) {
     var elemClasses = Array.isArray(e.class)? e.class.join(" "): e.class;
     var classes = [elemClasses, className].filter(c => c).join(" ")
-    return `${e.id? `id="${e.id}"`: ""} ${classes? `class="${classes}"`: ""}`
+
+    var properties = {}
+    if (e.id) {
+      properties["id"] = e.id;
+    }
+    if (classes) {
+      properties["class"] = classes;
+    }
+    return properties;
   },
 
   style(e) {
-    return `${e.style? `style="${e.style}"`: ""}`
+    if (!e.style) {
+      return {}
+    }
+    return {
+      "style": e.style
+    }
   },
 
   attributes(e) {
-    var s = "";
-    if (e.attributes) {
-      var attrs = e.attributes;
-      for (var key in attrs) {
-        s += `${key}="${attrs[key]}" `;
-      }
-    }
-    return s;
+    return e.attributes;
   },
 
 
@@ -316,8 +372,8 @@ Renderer.prototype = {
 
   toSvg(json, styles="DEFAULT", defs="DEFAULT") {
    this.init(json);
-   var svg = this.renderRoot(json, styles, defs);
-   return beautifer(svg);
+   var tree = this.renderRoot(json, styles, defs);
+   return tree.render();
   }
 };
 

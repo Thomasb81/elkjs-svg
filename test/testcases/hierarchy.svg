@@ -1,48 +1,46 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
  width="363.99999999999994" height="164">
-    <defs>
-    </defs>
+    <defs></defs>
     <g transform="translate(0,0)">
-        <!-- root [object Object],[object Object],[object Object],[object Object],[object Object] -->
         <polyline points="118.64851612999999,62 118.64851612999999,72 182,72 182,82" id="E1" class="edge" />
         <polyline points="238.64851613000002,62 238.64851613000002,72 182,72 182,82" id="E2" class="edge" />
         <polyline points="182,82 182,102" id="E3" class="edge" />
         <polyline points="182,82 182,92 302,92 302,102" id="E4" class="edge" />
         <polyline points="182,82 182,92 62,92 62,102" id="E5" class="edge" />
-        <rect id="P1" class="node" x="68" y="12" width="100" height="50" />
+        <rect id="P1" class="node" x="68.64851612999999" y="12" width="100" height="50" />
         <g transform="translate(68.64851612999999,12)">
             <rect id="P1:n" class="node" x="50" y="0" width="0" height="0" />
             <rect id="P1:s" class="node" x="50" y="50" width="0" height="0" />
-            <text x="0" y="0" width="0" height="0"   >
+            <text class="label" x="0" y="0" width="0" height="0"   >
                 P1
             </text>
         </g>
-        <rect id="P2" class="node" x="188" y="12" width="100" height="50" />
+        <rect id="P2" class="node" x="188.64851613000002" y="12" width="100" height="50" />
         <g transform="translate(188.64851613000002,12)">
             <rect id="P2:n" class="node" x="50" y="0" width="0" height="0" />
             <rect id="P2:s" class="node" x="50" y="50" width="0" height="0" />
-            <text x="0" y="0" width="0" height="0"   >
+            <text class="label" x="0" y="0" width="0" height="0"   >
                 P2
             </text>
         </g>
         <rect id="P3" class="node" x="132" y="102" width="100" height="50" />
         <g transform="translate(132,102)">
             <rect id="P3:n" class="node" x="50" y="0" width="0" height="0" />
-            <text x="0" y="0" width="0" height="0"   >
+            <text class="label" x="0" y="0" width="0" height="0"   >
                 P3
             </text>
         </g>
         <rect id="P4" class="node" x="252" y="102" width="100" height="50" />
         <g transform="translate(252,102)">
             <rect id="P4:n" class="node" x="50" y="0" width="0" height="0" />
-            <text x="0" y="0" width="0" height="0"   >
+            <text class="label" x="0" y="0" width="0" height="0"   >
                 P4
             </text>
         </g>
         <rect id="P5" class="node" x="12" y="102" width="100" height="50" />
         <g transform="translate(12,102)">
             <rect id="P5:n" class="node" x="50" y="0" width="0" height="0" />
-            <text x="0" y="0" width="0" height="0"   >
+            <text class="label" x="0" y="0" width="0" height="0"   >
                 P5
             </text>
         </g>
