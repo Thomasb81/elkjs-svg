@@ -139,6 +139,8 @@ Renderer.prototype = {
    */
 
   renderRoot(root, styles, defs) {
+    var children = [];
+
     var defsChildren = [];
     var css = this.svgCss(root.css || (styles == "DEFAULT"? this._style: ""));
     var defs = (root.defs || (defs == "DEFAULT"? this._defs: ""));
@@ -149,7 +151,10 @@ Renderer.prototype = {
       if (defs) {
         defsChildren.push(defs)
       }
+      children.push(new Xml("defs", {}, defsChildren));
     }
+
+    children.push(this.renderGraph(root));
 
     return new Xml(
       "svg",
@@ -159,10 +164,8 @@ Renderer.prototype = {
           "width": root.width || 100,
           "height": root.height || 100
       },
-      [
-          new Xml("defs", {}, defsChildren),
-          this.renderGraph(root),
-      ]);
+      children
+    );
   },
 
   renderGraph(graph) {
