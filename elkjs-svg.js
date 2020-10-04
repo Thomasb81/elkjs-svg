@@ -1,41 +1,41 @@
 "use strict";
 
-const {Xml, Text} = require("./helpers/xml.js");
+const {Xml, Text, Cdata} = require("./helpers/xml.js");
 
 function Renderer() {
   // configuration
-  this._style = new Text(`
-      rect {
-        opacity: 0.8;
-        fill: #6094CC;
-        stroke-width: 1;
-        stroke: #222222;
-      }
-      rect.port {
-        opacity: 1;
-        fill: #326CB2;
-      }
-      text {
-        font-size: 10px;
-        font-family: sans-serif;
-        /* in elk's coordinates "hanging" would be the correct value" */
-        dominant-baseline: hanging;
-        text-align: left;
-      }
-      g.port > text {
-        font-size: 8px;
-      }
-      polyline {
-        fill: none;
-        stroke: black;
-        stroke-width: 1;
-      }
-      path {
-        fill: none;
-        stroke: black;
-        stroke-width: 1;
-      }
-  `);
+  this._style = `
+    rect {
+      opacity: 0.8;
+      fill: #6094CC;
+      stroke-width: 1;
+      stroke: #222222;
+    }
+    rect.port {
+      opacity: 1;
+      fill: #326CB2;
+    }
+    text {
+      font-size: 10px;
+      font-family: sans-serif;
+      /* in elk's coordinates "hanging" would be the correct value" */
+      dominant-baseline: hanging;
+      text-align: left;
+    }
+    g.port > text {
+      font-size: 8px;
+    }
+    polyline {
+      fill: none;
+      stroke: black;
+      stroke-width: 1;
+    }
+    path {
+      fill: none;
+      stroke: black;
+      stroke-width: 1;
+    }
+  `;
   this._defs = new Xml(
     "marker",
     {
@@ -45,10 +45,10 @@ function Renderer() {
       "refX": "10",
       "refY": "4",
       "orient": "auto"
-     },
-     [
-       new Xml("path", {"d": "M0,7 L10,4 L0,1 L0,7", "style": "fill: #000000;"})
-     ]
+      },
+      [
+        new Xml("path", {"d": "M0,7 L10,4 L0,1 L0,7", "style": "fill: #000000;"})
+      ]
   );
 
   this.reset();
@@ -138,18 +138,16 @@ Renderer.prototype = {
    * Rendering methods.
    */
 
-  renderRoot(root, styles, defs) {
+  renderRoot(root, styles="DEFAULT", defs="DEFAULT") {
     var children = [];
 
     var defsChildren = [];
-    var css = this.svgCss(root.css || (styles == "DEFAULT"? this._style: ""));
-    var defs = (root.defs || (defs == "DEFAULT"? this._defs: ""));
-    if (css || defs) {
-      if (css) {
-        defsChildren.push(css)
+    if (styles != null || defs != null) {
+      if (styles != null) {
+        defsChildren.push(this.svgCss(styles == "DEFAULT"? this._style: styles));
       }
-      if (defs) {
-        defsChildren.push(defs)
+      if (defs != null) {
+        defsChildren.push(defs == "DEFAULT"? this._defs: new Text(defs));
       }
       children.push(new Xml("defs", {}, defsChildren));
     }
@@ -327,12 +325,10 @@ Renderer.prototype = {
       return "";
     }
     return new Xml("style", {"type": "text/css"}, [
-      new Text(`
-        <![CDATA[
-          ${root.css || (styles == "DEFAULT"? this._style: "")}
-        ]]>
-      `
-    )]);
+      new Cdata(
+        new Text(css)
+      )
+    ]);
   },
 
   posSize(e) {
@@ -385,7 +381,5 @@ Renderer.prototype = {
 
 
 exports = module.exports = {
-  Renderer,
-  Xml,
-  Text
+  Renderer
 };

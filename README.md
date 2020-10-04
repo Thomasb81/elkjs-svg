@@ -35,29 +35,50 @@ Each SVG element's id equals the id in the json graph.
 Additionally, nodes, edges, ports and labels 
 receive a class attribute equal to their type (e.g. `.node`). 
 
-Custom styles and svg definitions can be specified as follows, 
-note that you explicitly have to include the default style 
-if you add further styles.
+Custom styles and svg definitions can be specified as follows:
 
 ```
-var elksvg = require('elkjs-svg');
+const ELK = require('elkjs')
+const elksvg = require('elkjs-svg');
 
-var renderer = new elksvg.Renderer();
-var svg = renderer.toSvg(
-    graph,
-    styles=new elksvg.Text(`
-      rect {
-        opacity: 0.8;
-        fill: #6094CC;
-        stroke-width: 1;
-        stroke: #222222;
-      }`
-    ), 
-    defs=new elksvg.Xml("marker", {"id": "arrow"}, [
-        elksvg.helpers.xml.Xml("path", {"d": "M0,7 L10,4 L0,1 L0,7", "style": "fill: #000000;"})
-    ])
-);
-console.log(svg);
+var graph = {
+  "id": "root",
+  "layoutOptions": {
+    "elk.algorithm": "layered"
+  },
+  "children": [
+    {"id": "n1", "width": 30, "height": 30},
+    {"id": "n2", "width": 30, "height": 30},
+    {"id": "n3", "width": 30, "height": 30}
+  ],
+  "edges": [
+    {"id": "e1", "sources": ["n1"], "targets": ["n2"]},
+    {"id": "e2", "sources": ["n1"], "targets": ["n3"]}
+  ]
+}
+
+const elk = new ELK()
+elk.layout(graph)
+    .then(data => {
+      var renderer = new elksvg.Renderer();
+      var svg = renderer.toSvg(
+        data,
+        styles=`
+          rect {
+            opacity: 0.8;
+            fill: #6094CC;
+            stroke-width: 1;
+            stroke: #222222;
+          }
+        `, 
+        defs=`
+          <marker id="node">
+            <path d="0,7 L10,4 L0,1 L0,7" style="" />
+          </marker>
+        `
+      );
+      console.log(svg);
+    })
 ```
 
 To remove all the default styling and defs, set them to en empty string while calling toSvg().
