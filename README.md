@@ -49,6 +49,12 @@ This will be the output in the terminal:
 
 ```
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="104" height="104">
+  <defs>
+    <style type="text/css">
+      ...
+    </style>
+    <marker>...</marker>
+  </defs>
   <g>
     <polyline points="42,27 62,27" id="e1" class="edge" />
     <polyline points="42,37 52,37 52,77 62,77" id="e2" class="edge" />
@@ -58,6 +64,10 @@ This will be the output in the terminal:
   </g>
 </svg>
 ```
+
+Which when opened in a browser looks like this:
+
+![Elkjs SVG example image](/example.svg)
 
 Customizing CSS and defs
 ===
@@ -152,3 +162,4 @@ env ONLY_RENDER="your-testcase" npm run test-render | awk "NR>4" > test/testcase
 ```
 
 This tells the test-render script to only render your-testcase, removes the first four lines (which are output from npm), and writes the resulting SVG to the path you specify.
+[/Elkjs SVG exampl( imagee.svg]:)
