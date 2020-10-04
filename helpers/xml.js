@@ -21,7 +21,7 @@ class Text extends Node {
           if (firstChar && char == "\n") {continue}
           if (char == " ") {count += 1}
           else if (char == "\t") {count += this.INDENTATION}
-          else if (char == "\n") {break}
+          else {break}
           firstChar = false;
       }
       return content.split("\n").filter(line => line.trim()).map(line => line.slice(count)).join("\n");
@@ -29,6 +29,21 @@ class Text extends Node {
 
   render(indent=0) {
       return this.content.split("\n").map(line => this.indent(indent) + line).join("\n");
+  }
+}
+
+class Cdata extends Node {
+  constructor(child) {
+    super();
+    this.child = child;
+  }
+
+  render(indent=0) {
+    var out = [];
+    out.push(`${this.indent(indent)}<![CDATA[\n`);
+    out.push(this.child.render(indent + 1));
+    out.push(`\n${this.indent(indent)}]]>`);
+    return out.join("");
   }
 }
 
@@ -63,42 +78,41 @@ class Xml extends Node {
   }
 }
 
-
-
 if (require.main === module) {
-    console.log(
-        new Xml("svg", {"version": "1.1", "xmlns": "http://www.w3.org/2000/svg", "width": 104, "height": 104}, [
-            new Xml("defs", {}, [
-                new Xml("style", {"type": "text/css"}, [
-                    new Text(`
-                        <![CDATA[
-                          rect {
-                            opacity: 0.8;
-                            fill: #6094CC;
-                            stroke-width: 1;
-                            stroke: #222222;
-                          }
+  console.log(
+    new Xml("svg", {"version": "1.1", "xmlns": "http://www.w3.org/2000/svg", "width": 104, "height": 104}, [
+      new Xml("defs", {}, [
+        new Xml("style", {"type": "text/css"}, [
+          new Cdata(
+            new Text(`
+              rect {
+                opacity: 0.8;
+                fill: #6094CC;
+                stroke-width: 1;
+                stroke: #222222;
+              }
 
-                          rect.port {
-                            opacity: 1;
-                            fill: #326CB2;
-                          }
-                        ]]>
-                    `)
-                ])
-            ]),
-            new Xml("g", {"transform": "translate(0,0)"}, [
-                new Xml("polyline", {"points": "42,27 62,27", "id": "e1", "class": "edge"}),
-                new Xml("polyline", {"points": "42,37 52,37 52,77 62,77", "id": "e2", "class": "edge"}),
-                new Xml("rect", {"id": "n1", "class": "node", "x": "12", "y": "17", "width": "30", "height": "30"}),
-                new Xml("rect", {"id": "n2", "class": "node", "x": "62", "y": "12", "width": "30", "height": "30"}),
-                new Xml("rect", {"id": "n3", "class": "node", "x": "62", "y": "62", "width": "30", "height": "30"}),
-            ])
-        ]).render()
-    )
+              rect.port {
+                opacity: 1;
+                fill: #326CB2;
+              }
+            `)
+          )
+        ])
+      ]),
+      new Xml("g", {"transform": "translate(0,0)"}, [
+        new Xml("polyline", {"points": "42,27 62,27", "id": "e1", "class": "edge"}),
+        new Xml("polyline", {"points": "42,37 52,37 52,77 62,77", "id": "e2", "class": "edge"}),
+        new Xml("rect", {"id": "n1", "class": "node", "x": "12", "y": "17", "width": "30", "height": "30"}),
+        new Xml("rect", {"id": "n2", "class": "node", "x": "62", "y": "12", "width": "30", "height": "30"}),
+        new Xml("rect", {"id": "n3", "class": "node", "x": "62", "y": "62", "width": "30", "height": "30"}),
+      ])
+    ]).render()
+  )
 }
 
 exports = module.exports = {
   Xml,
   Text,
+  Cdata
 };
