@@ -1,38 +1,69 @@
 elkjs-svg
 === 
 
-A simple SVG generator for JSON graphs laid out 
-with [elkjs](https://github.com/kieler/elkjs)
-that requires no further dependencies.
-We mainly use it for debugging and rapid prototyping.
-
-For more complex use cases using [D3.js](https://d3js.org/) 
-should be more suitable. 
+A SVG generator for JSON graphs laid out with [elkjs](https://github.com/kieler/elkjs) that requires no further dependencies. ELK handles the conversion of ELK JSON to "layouted JSON". Elkjs-svg converts the layouted JSON to SVG.
 
 Usage 
 ===
 
-If you want to use it in the browser, 
-consider using [browserify](browserify.org). 
+If you want to use it in the browser, consider using [browserify](browserify.org). 
 
-Apart from that do:
+To use it from node.js:
 
 ```
 npm install elkjs-svg
 ```
-```
-var elksvg = require('elkjs-svg');
 
-var renderer = new elksvg.Renderer();
-var svg = renderer.toSvg(graph);
-console.log(svg);
+Put this code into test.js:
+
+```
+const ELK = require('elkjs')
+const elksvg = require('elkjs-svg');
+
+var graph = {
+  "id": "root",
+  "layoutOptions": {
+    "elk.algorithm": "layered"
+  },
+  "children": [
+    {"id": "n1", "width": 30, "height": 30},
+    {"id": "n2", "width": 30, "height": 30},
+    {"id": "n3", "width": 30, "height": 30}
+  ],
+  "edges": [
+    {"id": "e1", "sources": ["n1"], "targets": ["n2"]},
+    {"id": "e2", "sources": ["n1"], "targets": ["n3"]}
+  ]
+}
+
+const elk = new ELK()
+elk.layout(graph)
+  .then(data => {
+    var renderer = new elksvg.Renderer();
+    var svg = renderer.toSvg(data);
+    console.log(svg);
+  })
 ```
 
-The generated SVG elements can be styled using css. 
-A simple style definition is already included and used as 
-default. 
-Each SVG element's id equals the id in the json graph. 
-Additionally, nodes, edges, ports and labels 
+This will be the output in the terminal:
+
+```
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="104" height="104">
+  <g>
+    <polyline points="42,27 62,27" id="e1" class="edge" />
+    <polyline points="42,37 52,37 52,77 62,77" id="e2" class="edge" />
+    <rect id="n1" class="node" x="12" y="17" width="30" height="30" />
+    <rect id="n2" class="node" x="62" y="12" width="30" height="30" />
+    <rect id="n3" class="node" x="62" y="62" width="30" height="30" />
+  </g>
+</svg>
+```
+
+Customizing CSS and defs
+===
+
+The generated SVG elements can be styled using css. A simple style definition is already included and used as 
+default. Each SVG element's id equals the id in the json graph. Additionally, nodes, edges, ports and labels 
 receive a class attribute equal to their type (e.g. `.node`). 
 
 Custom styles and svg definitions can be specified as follows:
@@ -82,6 +113,9 @@ elk.layout(graph)
 ```
 
 To remove all the default styling and defs, set them to en empty string while calling toSvg().
+
+Specify custom attributes, classes and styles
+===
 
 It is possible to specify further attributes, classes, and styles 
 as part of the json graph. A node definition like this
