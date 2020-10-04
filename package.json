@@ -20,7 +20,7 @@
     "xml2js": "*"
   },
   "scripts": {
-    "test": "mocha test/test.js",
+    "test": "mocha test/test*",
     "render": "node test/cli-render.js"
   },
   "engines": {
