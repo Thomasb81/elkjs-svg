@@ -20,7 +20,7 @@ files.forEach(json_filename => {
     elk.layout(graph)
         .then(data => {
         	console.error(JSON.stringify(data, null, 4));
-            const result = renderer.toSvg(data, styles="", defs="");
+            const result = renderer.toSvg(data, styles=null, defs=null);
             console.log(result);
         })
         .catch((err) => {

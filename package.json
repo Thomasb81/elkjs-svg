@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "mocha test/test.js",
-    "test-render": "node test/test-render.js"
+    "render": "node test/cli-render.js"
   },
   "engines": {
     "node": ">=14.0"
