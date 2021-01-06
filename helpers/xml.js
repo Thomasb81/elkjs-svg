@@ -1,7 +1,9 @@
 "use strict";
 
 class Node {
-    INDENTATION = 2;
+  constructor() {
+    this.INDENTATION = 2;
+  }
 
     indent(indent) {
         return " ".repeat(this.INDENTATION * indent);
