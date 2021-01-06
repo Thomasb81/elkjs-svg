@@ -5,32 +5,32 @@ class Node {
     this.INDENTATION = 2;
   }
 
-    indent(indent) {
-        return " ".repeat(this.INDENTATION * indent);
-    }
+  indent(indent) {
+    return " ".repeat(this.INDENTATION * indent);
+  }
 }
 
 class Text extends Node {
   constructor(content) {
-      super();
-      this.content = this._stripCommonIndentation(content);
+    super();
+    this.content = this._stripCommonIndentation(content);
   }
 
   _stripCommonIndentation(content) {
-      var count = 0;
-      var firstChar = true;
-      for (const char of content) {
-          if (firstChar && char == "\n") {continue}
-          if (char == " ") {count += 1}
-          else if (char == "\t") {count += this.INDENTATION}
-          else {break}
-          firstChar = false;
-      }
-      return content.split("\n").filter(line => line.trim()).map(line => line.slice(count)).join("\n");
+    var count = 0;
+    var firstChar = true;
+    for (const char of content) {
+      if (firstChar && char == "\n") {continue}
+      if (char == " ") {count += 1}
+      else if (char == "\t") {count += this.INDENTATION}
+      else {break}
+      firstChar = false;
+    }
+    return content.split("\n").filter(line => line.trim()).map(line => line.slice(count)).join("\n");
   }
 
   render(indent=0) {
-      return this.content.split("\n").map(line => this.indent(indent) + line).join("\n");
+    return this.content.split("\n").map(line => this.indent(indent) + line).join("\n");
   }
 }
 
@@ -51,10 +51,10 @@ class Cdata extends Node {
 
 class Xml extends Node {
   constructor(tagName, attributes={}, children=[]) {
-      super();
-      this.tagName = tagName;
-      this.attributes = attributes;
-      this.children = children;
+    super();
+    this.tagName = tagName;
+    this.attributes = attributes;
+    this.children = children;
   }
 
   render(indent=0) {
@@ -64,16 +64,16 @@ class Xml extends Node {
 
     out.push(`${this.indent(indent)}<${this.tagName}${attributesString? " " + attributesString: ""}`);
     if (this.children.length != 0) {
-        out.push(">");
-        out.push("\n");
-        for (const child of this.children) {
-            out.push(`${child.render(indent + 1)}\n`);
-        }
-        out.push(this.indent(indent));
-        out.push(`</${this.tagName}>`);
+      out.push(">");
+      out.push("\n");
+      for (const child of this.children) {
+        out.push(`${child.render(indent + 1)}\n`);
+      }
+      out.push(this.indent(indent));
+      out.push(`</${this.tagName}>`);
     }
     else {
-        out.push(` />`);
+      out.push(` />`);
     }
 
     return out.join("");
