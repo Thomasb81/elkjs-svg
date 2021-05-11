@@ -14,7 +14,7 @@ To use it from node.js:
 npm install elkjs-svg
 ```
 
-Put this code into test.js:
+Put this code into example.js:
 
 ```
 const ELK = require('elkjs')
@@ -48,7 +48,7 @@ elk.layout(graph)
 Run the code with:
 
 ```bash
-node test.js
+node example.js
 ```
 
 This will be the output in the terminal:
@@ -71,7 +71,7 @@ This will be the output in the terminal:
 </svg>
 ```
 
-Which when opened in a browser looks like this:
+Which when copied to a file called example.svg and opened in a browser looks like this:
 
 ![Elkjs SVG example image](/example.svg)
 
