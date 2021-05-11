@@ -45,6 +45,12 @@ elk.layout(graph)
   })
 ```
 
+Run the code with:
+
+```bash
+node test.js
+```
+
 This will be the output in the terminal:
 
 ```
