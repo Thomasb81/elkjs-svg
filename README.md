@@ -10,13 +10,13 @@ If you want to use it in the browser, consider using [browserify](browserify.org
 
 To use it from node.js:
 
-```
+```bash
 npm install elkjs-svg
 ```
 
 Put this code into example.js:
 
-```
+```js
 const ELK = require('elkjs')
 const elksvg = require('elkjs-svg');
 
@@ -53,7 +53,7 @@ node example.js
 
 This will be the output in the terminal:
 
-```
+```xml
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="104" height="104">
   <defs>
     <style type="text/css">
@@ -84,7 +84,7 @@ receive a class attribute equal to their type (e.g. `.node`).
 
 Custom styles and svg definitions can be specified as follows:
 
-```
+```js
 const ELK = require('elkjs')
 const elksvg = require('elkjs-svg');
 
@@ -135,8 +135,8 @@ Specify custom attributes, classes and styles
 
 It is possible to specify further attributes, classes, and styles 
 as part of the json graph. A node definition like this
-```
-[...]
+
+```json
 {
   "id": "node1",
   "class": ["myClass", "otherClass"],
@@ -147,8 +147,10 @@ as part of the json graph. A node definition like this
   "style": "fill: #ddd;"
 }
 ```
+
 results in a corresponding svg element 
-```
+
+```xml
 <rect id="node1" class="myClass otherClass node" x="12" y="12" width="0" height="0" style="fill: #ddd;" data-foo="bar" rx="5" />
 ```
 
@@ -163,7 +165,7 @@ To run just one test use `ONLY_TEST="simple" npm test`, where "simple" is the na
 
 To add a new testcase, put a new json files into test/testcases, and use the test-render script to generate a new SVG:
 
-```
+```bash
 env ONLY_RENDER="your-testcase" npm run test-render | awk "NR>4" > test/testcases/your-testcase.svg
 ```
 
