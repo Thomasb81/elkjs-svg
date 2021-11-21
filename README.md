@@ -166,7 +166,7 @@ To run just one test use `ONLY_TEST="simple" npm test`, where "simple" is the na
 To add a new testcase, put a new json files into test/testcases, and use the test-render script to generate a new SVG:
 
 ```bash
-env ONLY_RENDER="your-testcase" npm run test-render | awk "NR>4" > test/testcases/your-testcase.svg
+env ONLY_RENDER="your-testcase" npm run render | awk "NR>4" > test/testcases/your-testcase.svg
 ```
 
 This tells the test-render script to only render your-testcase, removes the first four lines (which are output from npm), and writes the resulting SVG to the path you specify.
