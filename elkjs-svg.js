@@ -106,7 +106,7 @@ Renderer.prototype = {
   registerParentIds(p) {
     this._edgeParents[p.id] = [];
     if (p.properties) {
-      var er = this.getOption(p.properties);
+      var er = this.getOption(p.properties,p.id);
       if (er) {
         this._edgeRoutingStyle[p.id] = er;
       }
