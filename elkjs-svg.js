@@ -197,10 +197,12 @@ Renderer.prototype = {
   renderPortsAndLabels(node) {
     var children = [];
 
-    for (const p of node.ports) {
-      children.push(this.renderRect(p));
-      if (p.labels) {
-        children.push(this.renderPort(p));
+    if (node.ports) {
+      for (const p of node.ports) {
+        children.push(this.renderRect(p));
+        if (p.labels) {
+          children.push(this.renderPort(p));
+        }
       }
     }
     if (node.labels) {
