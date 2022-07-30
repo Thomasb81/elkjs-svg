@@ -1,6 +1,8 @@
 elkjs-svg
 === 
 
+*NOTE: This is not tested with any advanced layouts. Please test and fix bugs as PR:s if you can!*
+
 A SVG generator for JSON graphs laid out with [elkjs](https://github.com/kieler/elkjs) that requires no further dependencies. ELK handles the conversion of ELK JSON to "layouted JSON". Elkjs-svg converts the layouted JSON to SVG.
 
 Usage 
