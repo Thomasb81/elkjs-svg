@@ -106,7 +106,7 @@ Renderer.prototype = {
   registerParentIds(p) {
     this._edgeParents[p.id] = [];
     if (p.properties) {
-      var er = this.getOption(p.properties);
+      var er = this.getOption(p.properties,p.id);
       if (er) {
         this._edgeRoutingStyle[p.id] = er;
       }
@@ -197,10 +197,12 @@ Renderer.prototype = {
   renderPortsAndLabels(node) {
     var children = [];
 
-    for (const p of node.ports) {
-      children.push(this.renderRect(p));
-      if (p.labels) {
-        children.push(this.renderPort(p));
+    if (node.ports) {
+      for (const p of node.ports) {
+        children.push(this.renderRect(p));
+        if (p.labels) {
+          children.push(this.renderPort(p));
+        }
       }
     }
     if (node.labels) {

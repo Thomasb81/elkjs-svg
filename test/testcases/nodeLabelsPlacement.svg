@@ -1,0 +1,10 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="74" height="74">
+  <g>
+    <rect id="n1" class="node" x="12" y="12" width="50" height="50" />
+    <g transform="translate(12,12)">
+      <text id="l1" class="label" x="25" y="25" width="0" height="0">
+        n1
+      </text>
+    </g>
+  </g>
+</svg>
